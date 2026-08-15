@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>FloTutor 10.1 – Studentversie</title>
+<style>
+:root{
+  --navy:#143d68; --navy2:#0d2d4c; --orange:#d87a3c; --cream:#fff7f1;
+  --bg:#edf3f7; --text:#26323e; --muted:#6b7280; --green:#2f8f5b;
+  --red:#b4232a; --line:#e7ebee; --soft:#f7f9fb;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+.app{max-width:430px;min-height:100vh;margin:auto;background:#fff;position:relative;overflow:hidden}
+header{padding:18px 20px 10px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:22px;font-weight:900;color:var(--navy)} .brand span{color:var(--orange)}
+.pill{background:var(--cream);color:var(--orange);padding:8px 11px;border-radius:999px;font-size:12px;font-weight:900}
+.screen{display:none;padding:8px 20px 112px}.screen.active{display:block}
+.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:var(--orange)}
+h1{font-size:30px;line-height:1.08;color:var(--navy);margin:8px 0 12px}
+h2{font-size:23px;color:var(--navy);margin:10px 0}
+h3{color:var(--navy);margin:0}
+.lead{color:var(--muted);line-height:1.5}
+.hero{background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff;border-radius:24px;padding:21px;margin:8px 0 18px}
+.hero h1{color:#fff}.hero .lead{color:#d8e4ee}
+.card{background:var(--cream);border:1px solid #f0ded1;border-radius:18px;padding:18px;margin:14px 0}
+.word{font-size:25px;font-weight:900;color:var(--navy)}
+.btn{width:100%;border:0;border-radius:14px;padding:15px;font-size:16px;font-weight:900;background:var(--navy);color:#fff;cursor:pointer}
+.btn.orange{background:var(--orange)} .btn.light{background:#f3f6f8;color:var(--navy)}
+.footer{position:absolute;bottom:0;left:0;right:0;padding:14px 20px 18px;background:#fff;border-top:1px solid var(--line)}
+.progress{height:8px;background:#e4e9ed;border-radius:999px;overflow:hidden;margin:8px 0 20px}
+.progress span{display:block;height:100%;background:var(--orange)}
+.option{width:100%;text-align:left;background:#fff;border:2px solid #dfe4e8;border-radius:14px;padding:14px;margin:9px 0;font-size:16px;cursor:pointer}
+.option.correct{border-color:var(--green);background:#eef9f2}.option.wrong{border-color:var(--red);background:#fff1f2}.option.sel{border-color:var(--navy)}
+.feedback{min-height:24px;margin-top:10px;font-weight:800}.good{color:var(--green)}.bad{color:var(--red)}
+input,textarea{width:100%;padding:14px;border:2px solid #dfe4e8;border-radius:14px;font:inherit;font-size:17px}
+textarea{min-height:120px;resize:vertical}
+.step{display:flex;gap:12px;align-items:center;border:1px solid var(--line);padding:12px;border-radius:15px;margin:9px 0}
+.num{width:35px;height:35px;border-radius:50%;background:var(--cream);color:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:900}
+.hint{border:1px dashed #e0a77f;background:#fffaf6;border-radius:14px;padding:13px;margin:12px 0}.hint b{color:var(--orange)}
+.small{font-size:12px;color:var(--muted)}
+.micwrap{text-align:center}.mic{width:78px;height:78px;border:0;border-radius:50%;background:var(--orange);color:#fff;font-size:30px;cursor:pointer}
+.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{background:#fff;border:1px solid #dfe4e8;border-radius:999px;padding:8px 10px;font-size:13px}
+.score{text-align:center;padding-top:28px}.big{font-size:48px;font-weight:900;color:var(--orange)}.sun{font-size:66px}
+.reviewbox{background:var(--soft);border-radius:16px;padding:14px;margin:12px 0}
+.correction{border-left:4px solid var(--orange);background:#fffaf6;border-radius:12px;padding:12px;margin:10px 0}
+.example{display:none;background:#eef5fb;border:1px solid #cbdbe9;border-radius:14px;padding:14px;margin-top:12px}
+.status{display:inline-block;padding:6px 9px;border-radius:999px;font-size:12px;font-weight:800}
+.status.ok{background:#eaf7ef;color:var(--green)}.status.try{background:#fff1f2;color:var(--red)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.tabs button{border:0;border-radius:12px;padding:12px;font-weight:900}.tabs .on{background:var(--navy);color:#fff}
+.flash{min-height:205px;display:flex;flex-direction:column;justify-content:center;text-align:center;cursor:pointer}
+.flashimg{width:100%;height:170px;object-fit:cover;border-radius:14px;margin-bottom:14px}
+.contextcue{font-size:15px;line-height:1.5;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;text-align:left}
+.ratings{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.ratings button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 5px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">FloTutor <span>🌻</span></div><div class="pill">THEMA 10.1</div></header>
+
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="kicker" style="color:#ffd1b4">Is dat wel veilig?</div>
+    <h1>U moet hier stoppen!</h1>
+    <p class="lead">Oefen zelfstandig na de les: begrijpen, hele zinnen, spreken, schrijven en woorden herhalen.</p>
+    <button class="btn orange" onclick="startLesson()">Start lesoefening</button>
+  </div>
+
+  <div class="tabs">
+    <button class="on">Lesoefening</button>
+    <button onclick="show('words')">🧠 Mijn woorden</button>
+  </div>
+
+  <div class="step"><div class="num">1</div><div><b>Begrijpen & reageren</b><br><span class="small">Verkeerssituaties uit 10.1</span></div></div>
+  <div class="step"><div class="num">2</div><div><b>Hele zinnen spreken</b><br><span class="small">Met optionele Kopieerwoorden</span></div></div>
+  <div class="step"><div class="num">3</div><div><b>Schrijven & verbeteren</b><br><span class="small">Directe feedback + voorbeeldcorrectie</span></div></div>
+</section>
+
+<section id="words" class="screen">
+  <div class="kicker">Zelfstandig herhalen</div>
+  <h1>🧠 Mijn woorden</h1>
+  <p class="lead">Denk eerst zelf aan het woord. Tik daarna op de kaart.</p>
+
+  <div class="flash card" id="flash" onclick="flipCard()"></div>
+  <div class="ratings" id="ratings" style="display:none">
+    <button onclick="rate('vergeten')">😕 Vergeten</button>
+    <button onclick="rate('moeilijk')">🤔 Moeilijk</button>
+    <button onclick="rate('ken')">😊 Ik ken dit</button>
+  </div>
+  <button class="btn light" style="margin-top:14px" onclick="show('home')">Terug</button>
+</section>
+
+<section id="practice" class="screen">
+  <div class="progress"><span id="prog"></span></div>
+  <div class="kicker" id="tag"></div>
+  <h2 id="title"></h2>
+  <div id="activity"></div>
+  <div class="feedback" id="fb"></div>
+</section>
+
+<section id="writingReview" class="screen">
+  <div class="kicker">Schrijven · Feedback</div>
+  <h2>Verbeter je tekst</h2>
+
+  <div class="reviewbox">
+    <b>Jouw eerste versie</b>
+    <p id="originalText"></p>
+  </div>
+
+  <div class="card">
+    <b>FloTutor feedback 🌻</b>
+    <div id="writeFeedback" class="lead"></div>
+  </div>
+
+  <div class="hint">
+    <b>💡 Nu jij</b>
+    <p class="small">Verbeter eerst zelf je tekst. Daarna kun je een voorbeeldcorrectie bekijken.</p>
+  </div>
+
+  <textarea id="rewrite"></textarea>
+
+  <button class="btn orange" style="margin-top:12px" onclick="checkRewrite()">Controleer mijn verbetering</button>
+
+  <div id="rewriteFeedback" class="feedback"></div>
+
+  <button id="showExampleBtn" class="btn light" style="display:none;margin-top:12px" onclick="showExample()">Bekijk voorbeeldcorrectie</button>
+
+  <div id="exampleCorrection" class="example">
+    <b>Voorbeeld</b>
+    <p>Fietsen in Nederland is meestal veilig. Je moet goed uitkijken en je aan de verkeersregels houden. Stop bij een rood stoplicht en let goed op voetgangers en zebrapaden.</p>
+    <p class="small">Dit is één mogelijke goede versie. Jouw tekst hoeft niet precies hetzelfde te zijn.</p>
+  </div>
+
+  <button id="continueAfterWriting" class="btn" style="display:none;margin-top:12px" onclick="finishWriting()">Verder</button>
+</section>
+
+<section id="result" class="screen">
+  <div class="score">
+    <div class="sun">🌻</div>
+    <div class="kicker">10.1 afgerond</div>
+    <h1>Goed gedaan!</h1>
+    <div class="big" id="score">0/8</div>
+    <p class="lead">Je hebt geoefend met begrijpen, hele zinnen, spreken en schrijven.</p>
+    <div class="card">
+      <b>FloTutor-tip</b>
+      <p class="lead">Ga daarna naar <b>Mijn woorden</b> en herhaal de woorden die je nog moeilijk vindt.</p>
+    </div>
+    <button class="btn orange" onclick="show('home')">Terug naar 10.1</button>
+  </div>
+</section>
+
+<div class="footer" id="footer" style="display:none"><button class="btn" id="next">Controleer</button></div>
+</div>
+
+<script>
+const cards=[
+{w:'het zebrapad',cue:'Stel je voor: witte strepen op de weg waar voetgangers oversteken.',d:'Een plek op de weg waar voetgangers kunnen oversteken.',ex:'De voetganger steekt over op het zebrapad.'},
+{w:'het stoplicht',cue:'Rood, oranje en groen licht bij een kruispunt.',d:'Een licht dat zegt wanneer je moet stoppen of doorgaan.',ex:'Het stoplicht staat op rood.'},
+{w:'de helm',cue:'Je draagt dit op je hoofd om jezelf te beschermen tijdens het fietsen.',d:'Iets dat je op je hoofd draagt voor veiligheid.',ex:'De fietser draagt een helm.'},
+{w:'het fietspad',cue:'Een speciaal deel van de weg waar fietsers rijden.',d:'Een deel van de weg speciaal voor fietsers.',ex:'Ik fiets op het fietspad.'},
+{w:'de voetganger',cue:'Deze persoon loopt in het verkeer en wil bijvoorbeeld oversteken.',d:'Een persoon die loopt in het verkeer.',ex:'De voetganger wacht bij het stoplicht.'},
+{w:'de boete',cue:'Je rijdt door rood. De politie laat je stoppen en je moet geld betalen.',d:'Geld dat je moet betalen omdat je een regel overtreedt.',ex:'Hij krijgt een boete van de politie.'},
+{w:'gevaarlijk',cue:'Een fietser rijdt door rood terwijl een voetganger wil oversteken.',d:'Niet veilig; er kan iets ergs gebeuren.',ex:'Door rood fietsen is gevaarlijk.'},
+{w:'uitkijken',cue:'Je wilt oversteken. Eerst kijk je goed naar links en naar rechts.',d:'Goed opletten omdat er gevaar kan zijn.',ex:'Je moet uitkijken als je oversteekt.'}
+];
+let ci=0,flipped=false;
+function renderCard(){
+  const c=cards[ci];flipped=false;
+  document.getElementById('ratings').style.display='none';
+  document.getElementById('flash').innerHTML='<div class="contextcue"><b>Situatie</b><br>'+c.cue+'</div><div class="word">Welk woord past hierbij?</div><p class="small">Denk eerst zelf. Tik daarna op de kaart.</p>';
+}
+function flipCard(){
+  if(flipped)return; flipped=true; const c=cards[ci];
+  document.getElementById('flash').innerHTML='<div class="word">'+c.w+'</div><p>'+c.d+'</p><p class="small"><b>Voorbeeld:</b> '+c.ex+'</p>';
+  document.getElementById('ratings').style.display='grid';
+}
+function rate(r){
+  let saved=JSON.parse(localStorage.getItem('flotutorWords')||'{}');
+  saved[cards[ci].w]=r; localStorage.setItem('flotutorWords',JSON.stringify(saved));
+  if(r==='vergeten'&&ci>0) cards.splice(ci+2,0,cards[ci]);
+  ci=(ci+1)%cards.length; renderCard();
+}
+renderCard();
+
+const items=[
+{tag:'Begrijpen · 1/8',title:'Wat gebeurt er?',type:'choice',prompt:'Een fietser rijdt door rood. Een agent laat hem stoppen.',a:['De fietser heeft een verkeersregel overtreden.','De fietser moet naar zijn baas.','De agent wil zijn fiets lenen.'],ok:0},
+{tag:'Reageren · 2/8',title:'Wat zeg je?',type:'choice',prompt:'Je ziet iemand gevaarlijk door rood fietsen.',a:['Let op! U moet hier stoppen.','Ik ben onderweg naar mijn werk.','Dat is dezelfde fietser.'],ok:0},
+{tag:'Hele zin · 3/8',title:'Maak een hele zin',type:'sentence',prompt:'Waarom is door rood fietsen gevaarlijk?',starter:'Door rood fietsen is gevaarlijk omdat…'},
+{tag:'Spreken · 4/8',title:'Wat zeg je tegen hem?',type:'speak',prompt:'Een jongen staat met zijn scooter op de weg. Hij luistert naar muziek en ziet de bus niet.',starter:'Ik zeg tegen hem…',hints:['kijk uit','bus','gevaarlijk','weg']},
+{tag:'Spreken · 5/8',title:'Leg het uit',type:'speak',prompt:'Waarom moet een fietser goed uitkijken bij een zebrapad?',starter:'Een fietser moet goed uitkijken omdat…',hints:['voetganger','zebrapad','oversteken']},
+{tag:'Reageren · 6/8',title:'Maak de reactie af',type:'gap',prompt:'Het spijt me. Het zal niet meer ___.',ok:'gebeuren'},
+{tag:'Schrijven · 7/8',title:'Schrijf een bericht',type:'write',prompt:'Een vriend komt naar Nederland en wil een fiets huren. Schrijf 2–4 hele zinnen. Vertel of fietsen veilig is en waar je vriend op moet letten.',starter:'Fietsen in Nederland is…'},
+{tag:'10.1 Check · 8/8',title:'Laatste check',type:'choice',prompt:'Welke zin is een duidelijke, volledige reactie?',a:['Ik zeg tegen hem dat hij moet uitkijken, omdat er een bus aankomt.','Bus gevaarlijk.','Uitkijken!'],ok:0}
+];
+
+let i=0,score=0,answered=false;
+const footer=document.getElementById('footer'), next=document.getElementById('next');
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  footer.style.display=id==='practice'?'block':'none';
+}
+function startLesson(){i=0;score=0;show('practice');render();}
+function render(){
+  const q=items[i],a=document.getElementById('activity'),fb=document.getElementById('fb');
+  answered=false; fb.textContent=''; fb.className='feedback'; a.innerHTML=''; delete a.dataset.sel;
+  document.getElementById('prog').style.width=((i+1)/items.length*100)+'%';
+  document.getElementById('tag').textContent=q.tag; document.getElementById('title').textContent=q.title;
+  next.textContent=(['sentence','speak','write'].includes(q.type))?'Klaar':'Controleer';
+  if(q.prompt)a.innerHTML='<div class="card">'+q.prompt+'</div>';
+
+  if(q.type==='choice'){
+    q.a.forEach((t,j)=>{
+      let b=document.createElement('button'); b.className='option'; b.textContent=t;
+      b.onclick=()=>{if(!answered){a.querySelectorAll('.option').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');a.dataset.sel=j}};
+      a.appendChild(b);
+    });
+  }
+  if(q.type==='gap') a.innerHTML+='<input id="gap" placeholder="Typ één woord">';
+
+  if(q.type==='sentence'){
+    a.innerHTML+='<button class="btn light" onclick="showStarter()">💡 Help mij beginnen</button><div id="starter" class="hint" style="display:none"><b>💡 Kopieerwoorden</b><p>'+q.starter+'</p></div><textarea id="sentenceText" placeholder="Schrijf een hele zin..."></textarea>';
+  }
+
+  if(q.type==='speak'){
+    a.innerHTML+='<button class="btn light" onclick="showStarter()">💡 Help mij beginnen</button><div id="starter" class="hint" style="display:none"><b>💡 Kopieerwoorden</b><p>'+q.starter+'</p></div><div class="card micwrap"><button class="mic" onclick="listen()">🎙️</button><p id="spoken" class="small">Druk op de microfoon en geef antwoord in een hele zin.</p><div id="manualSpeak" style="display:none;margin-top:12px"><textarea id="manualSpokenText" placeholder="Typ hier wat je hardop hebt gezegd..."></textarea></div></div><div class="chips">'+q.hints.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div>';
+  }
+
+  if(q.type==='write'){
+    a.innerHTML+='<button class="btn light" onclick="showStarter()">💡 Help mij beginnen</button><div id="starter" class="hint" style="display:none"><b>💡 Kopieerwoorden</b><p>'+q.starter+'</p></div><textarea id="writing" placeholder="Schrijf 2–4 hele zinnen..."></textarea>';
+  }
+}
+
+function showStarter(){const s=document.getElementById('starter');if(s)s.style.display='block';}
+
+next.onclick=()=>{
+  const q=items[i],a=document.getElementById('activity'),fb=document.getElementById('fb');
+
+  if(q.type==='sentence'){
+    const t=document.getElementById('sentenceText').value.trim();
+    if(t.split(/\s+/).length<5){
+      fb.textContent='Je antwoord is nog erg kort. Probeer een hele zin te maken. Gebruik eventueel de Kopieerwoorden.';
+      fb.className='feedback bad'; return;
+    }
+    score++; advance(); return;
+  }
+
+  if(q.type==='speak'){
+    const spokenEl=document.getElementById('spoken');
+    let t=spokenEl.dataset.text||'';
+    const manual=document.getElementById('manualSpokenText');
+    if(!t && manual) t=manual.value.trim();
+
+    if(!t){
+      fb.textContent='Zeg je antwoord hardop. Werkt de microfoon niet? Typ dan hieronder wat je hebt gezegd.';
+      fb.className='feedback bad';
+      document.getElementById('manualSpeak').style.display='block';
+      return;
+    }
+    if(t.split(/\s+/).length<5){
+      fb.textContent='Ik begrijp je antwoord, maar probeer het nu als een hele zin. Gebruik eventueel de Kopieerwoorden.';
+      fb.className='feedback bad'; return;
+    }
+    score++; advance(); return;
+  }
+
+  if(q.type==='write'){
+    const t=document.getElementById('writing').value.trim();
+    if(t.split(/\s+/).length<8){
+      fb.textContent='Schrijf nog iets meer. Probeer minimaal twee hele zinnen.';
+      fb.className='feedback bad'; return;
+    }
+    document.getElementById('originalText').textContent=t;
+    document.getElementById('rewrite').value=t;
+    document.getElementById('writeFeedback').innerHTML=writingFeedback(t);
+    document.getElementById('rewriteFeedback').textContent='';
+    document.getElementById('showExampleBtn').style.display='none';
+    document.getElementById('continueAfterWriting').style.display='none';
+    document.getElementById('exampleCorrection').style.display='none';
+    show('writingReview');
+    return;
+  }
+
+  if(!answered){
+    let ok=false;
+    if(q.type==='choice'){
+      if(a.dataset.sel===undefined){
+        fb.textContent='Kies eerst een antwoord.'; fb.className='feedback bad'; return;
+      }
+      ok=Number(a.dataset.sel)===q.ok;
+      a.querySelectorAll('.option').forEach((b,j)=>{
+        if(j===q.ok)b.classList.add('correct');
+        if(j===Number(a.dataset.sel)&&j!==q.ok)b.classList.add('wrong');
+      });
+    } else {
+      ok=document.getElementById('gap').value.trim().toLowerCase()===q.ok;
+    }
+
+    answered=true;
+    if(ok){score++;fb.textContent='Goed! ✓';fb.className='feedback good'}
+    else{fb.textContent=q.type==='gap'?'Het goede antwoord is: gebeuren.':'Bekijk het groene antwoord.';fb.className='feedback bad'}
+    next.textContent='Volgende'; return;
+  }
+  advance();
+};
+
+function writingFeedback(t){
+  const notes=[];
+  const lower=t.toLowerCase();
+
+  if(!/[.!?]/.test(t)) notes.push('Zet een punt aan het einde van je zinnen.');
+  if(!/\b(veilig|gevaarlijk)\b/i.test(t)) notes.push('Gebruik bij voorkeur het woord “veilig” of “gevaarlijk”.');
+  if(!/\b(uitkijk|uitkijken|stop|stoplicht|fietspad|zebrapad|voetganger|regel)\b/i.test(t)) notes.push('Voeg minimaal één woord uit Thema 10.1 toe.');
+  if(/\been rode stoplicht\b/i.test(t)) notes.push('Kijk nog eens naar “een rode stoplicht”. Het is <b>het stoplicht</b>. Welk bijvoeglijk naamwoord hoort daarbij?');
+  if(/\bde stoplicht\b/i.test(t)) notes.push('Controleer het lidwoord bij “stoplicht”.');
+  if(/\bhet zebrapad\b/i.test(t)===false && /\bzebrapad\b/i.test(t)) notes.push('Controleer ook het lidwoord bij “zebrapad”.');
+  if(/\bik moet uitkijkt\b/i.test(t)) notes.push('Na “moet” gebruik je het hele werkwoord: kijk nog eens naar “uitkijkt”.');
+
+  if(notes.length===0){
+    notes.push('Je boodschap is duidelijk en je gebruikt passende woorden uit 10.1.');
+    notes.push('Lees je tekst nog één keer. Kun je één zin nog duidelijker of natuurlijker maken?');
+  }
+  return notes.map(x=>'<div class="correction">• '+x+'</div>').join('');
+}
+
+function checkRewrite(){
+  const t=document.getElementById('rewrite').value.trim();
+  const fb=document.getElementById('rewriteFeedback');
+
+  if(t.split(/\s+/).length<8){
+    fb.textContent='Je tekst is nog erg kort. Probeer minimaal twee hele zinnen.';
+    fb.className='feedback bad'; return;
+  }
+
+  const remaining=[];
+  if(/\been rode stoplicht\b/i.test(t)) remaining.push('“een rode stoplicht”');
+  if(/\bde stoplicht\b/i.test(t)) remaining.push('“de stoplicht”');
+  if(/\bik moet uitkijkt\b/i.test(t)) remaining.push('“ik moet uitkijkt”');
+
+  if(remaining.length){
+    fb.textContent='Er staat nog iets dat je kunt verbeteren: '+remaining.join(', ')+'. Probeer nog één keer.';
+    fb.className='feedback bad';
+  }else{
+    fb.textContent='Mooi! Je hebt je tekst opnieuw bekeken en verbeterd.';
+    fb.className='feedback good';
+    document.getElementById('showExampleBtn').style.display='block';
+    document.getElementById('continueAfterWriting').style.display='block';
+  }
+}
+
+function showExample(){
+  document.getElementById('exampleCorrection').style.display='block';
+}
+
+function finishWriting(){
+  score++;
+  i++;
+  show('practice');
+  render();
+}
+
+function advance(){
+  if(i<items.length-1){i++;render()}
+  else{
+    document.getElementById('score').textContent=score+'/8';
+    show('result');
+  }
+}
+
+function listen(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const out=document.getElementById('spoken');
+  const manual=document.getElementById('manualSpeak');
+
+  if(!SR){
+    out.textContent='De microfoonfunctie werkt niet in deze browser. Zeg je antwoord hardop en typ hieronder wat je hebt gezegd.';
+    manual.style.display='block';
+    return;
+  }
+
+  try{
+    const r=new SR();
+    r.lang='nl-NL';
+    r.interimResults=false;
+    out.textContent='Ik luister…';
+
+    r.onresult=e=>{
+      const t=e.results[0][0].transcript;
+      out.dataset.text=t;
+      out.textContent='Je zei: '+t+(t.split(/\s+/).length<5?' — Probeer dit uit te bouwen tot een hele zin.':' — Mooi, dit is een hele zin.');
+    };
+
+    r.onerror=()=>{
+      out.textContent='De microfoon kon je niet goed horen. Zeg je antwoord hardop en typ hieronder wat je hebt gezegd.';
+      manual.style.display='block';
+    };
+
+    r.start();
+  }catch(e){
+    out.textContent='De microfoonfunctie is hier niet beschikbaar. Zeg je antwoord hardop en typ hieronder wat je hebt gezegd.';
+    manual.style.display='block';
+  }
+}
+</script>
+</body>
+</html>
